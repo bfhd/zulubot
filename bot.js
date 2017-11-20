@@ -89,7 +89,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                         });
                     } else {
                         jail = JSON.parse(data); 
-                        var prisonerslist;
+                        var prisonerslist = "";
                         for (i = 0; i < jail.Prisoners.length; i++) {
 			    prisonerslist += jail.Prisoners[i];
 			    prisonerslist += ' ' + '\n';
