@@ -63,7 +63,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                  });
              break;
 
-            case 'haat': //announce Rancor raid time
+            case 'haat': //announce HAAT raid time
                 fs.readFile('./raids.json', 'utf8', function(err,data) {
                     if (err) {
                         bot.sendMessage({
@@ -91,9 +91,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                         jail = JSON.parse(data); 
                         var prisonerslist = "";
                         for (i = 0; i < jail.Prisoners.length; i++) {
-			    prisonerslist += jail.Prisoners[i];
-			    prisonerslist += ' ' + '\n';
-			}
+			                prisonerslist += jail.Prisoners[i];
+			                prisonerslist += ' ' + '\n';
+			            }
                         bot.sendMessage({
                             to: channelID,
                             message: 'Current prisoners: \n' + prisonerslist
