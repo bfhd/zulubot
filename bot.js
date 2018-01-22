@@ -7,7 +7,8 @@ var schedule = require('node-schedule');
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
-    colorize: true
+    colorize: true,
+    timestamp: true
 });
 logger.level = 'debug';
 
