@@ -2,6 +2,7 @@ var Discord = require('discord.io');
 var logger = require('winston');
 var fs = require('fs');
 var auth = require('./auth.json');
+var schedule = require('node-schedule');
 
 // Configure logger settings
 logger.remove(logger.transports.Console);
@@ -28,6 +29,12 @@ bot.on('ready', function (evt) {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(bot.username + ' - (' + bot.id + ')');
+    var timer = new schedule.RecurrenceRule(); //timer for announcements
+    timer.minute = 10;
+    //timer.hour = 12;
+    var lunch = schedule.scheduleJob(timer, function() {
+        bot.sendMessage({to: channelID, message: 'Lunch! Bot will be offline for 30 minutes...'});
+    });
 });
 bot.on('message', function (user, userID, channelID, message, evt) {
     // Our bot needs to know if it will execute a command
