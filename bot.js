@@ -26,24 +26,28 @@ var bot = new Discord.Client({
 //    }
 //   //return console.log(data);
 //});
-   function kek() { logger.info('kek'); bot.sendMessage({to: '377562096088645636', message: 'kek'});
-}
-   setInterval(kek,60000); 
+//    function kek() { logger.info('kek'); bot.sendMessage({to: '377562096088645636', message: 'kek'}); }
+//    setInterval(kek,60000); 
 bot.on('ready', function (evt) {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(bot.username + ' - (' + bot.id + ')');
+//get all channels
+   /* for (chans in bot.channels) {
+    
+}*/
+//start timers
     var timer = new schedule.RecurrenceRule(); //timer for announcements
     timer.hour = 19;
-    fs.readFile('/channels.json', 'utf8', function(err,data) {
+    fs.readFile('./channels.json', 'utf8', function(err,data) {
         if (err) {
-            logger.info('Couldn't load channel data.');
+            logger.info('Couldn\'t load channel data.');
         } else {
             chan = JSON.parse(data);
         }
     });
     var lunch = schedule.scheduleJob(timer, function() {
-        bot.sendMessage({to: chan.test, message: 'Lunch! Bot will be offline for 5 minutes...'});
+        bot.sendMessage({to: chan.test, message: 'Rancor time!'});
         logger.info('lunched');
     });
 });
@@ -123,8 +127,10 @@ bot.on('message', function (user, userID, channelID, message, evt) {
          }
      }
 });
-//todo
+//TODO:
 // announce raid times
 // fix jail
 // suggest raid start times
-
+// schedule start times with node-schedule, announce raid start or gogogo 
+// load all channels at start and get their IDs so it's easier to send messages later
+// 
