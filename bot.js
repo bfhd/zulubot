@@ -3,6 +3,7 @@ var logger = require('winston');
 var fs = require('fs');
 var auth = require('./auth.json');
 var schedule = require('node-schedule');
+var moment = require('moment');
 
 // Configure logger settings
 logger.remove(logger.transports.Console);
@@ -25,21 +26,31 @@ var bot = new Discord.Client({
 //    }
 //   //return console.log(data);
 //});
-
+   function kek() { logger.info('kek'); bot.sendMessage({to: '377562096088645636', message: 'kek'});
+}
+   setInterval(kek,60000); 
 bot.on('ready', function (evt) {
     logger.info('Connected');
     logger.info('Logged in as: ');
     logger.info(bot.username + ' - (' + bot.id + ')');
     var timer = new schedule.RecurrenceRule(); //timer for announcements
-    timer.minute = 10;
-    //timer.hour = 12;
+    timer.hour = 19;
+    fs.readFile('/channels.json', 'utf8', function(err,data) {
+        if (err) {
+            logger.info('Couldn't load channel data.');
+        } else {
+            chan = JSON.parse(data);
+        }
+    });
     var lunch = schedule.scheduleJob(timer, function() {
-        bot.sendMessage({to: channelID, message: 'Lunch! Bot will be offline for 30 minutes...'});
+        bot.sendMessage({to: chan.test, message: 'Lunch! Bot will be offline for 5 minutes...'});
+        logger.info('lunched');
     });
 });
 bot.on('message', function (user, userID, channelID, message, evt) {
     // Our bot needs to know if it will execute a command
     // It will listen for messages that will start with `!`
+    logger.info('user: ' + user + 'channelid: ' + channelID); 
     if (message.substring(0, 1) == '!') {
         var args = message.substring(1).split(' ');
         var cmd = args[0];
