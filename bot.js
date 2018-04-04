@@ -3,7 +3,7 @@ var logger = require('winston');
 var fs = require('fs');
 var auth = require('./auth.json');
 var schedule = require('node-schedule');
-var moment = require('moment');
+var moment = require('moment-timezone');
 
 // Configure logger settings
 logger.remove(logger.transports.Console);
@@ -37,8 +37,22 @@ bot.on('ready', function (evt) {
     
 }*/
 //start timers
-    var timer = new schedule.RecurrenceRule(); //timer for announcements
-    timer.hour = 19;
+    var timerrt = new schedule.RecurrenceRule(); //timer for announcements
+    var timerht = new schedule.RecurrenceRule();
+    var rancortime = 20; //eventually replace with loading from file
+    var haattime = 19;
+    var rt = moment.utc().hours(rancortime).minutes(0).seconds(0);
+    var ht = moment.utc().hours(haattime).minutes(0).seconds(0);
+    rt.add(1,'days');
+    ht.add(1,'days');
+    var localrt = rt;
+    var localht = ht; 
+    timerrt.minute = 0;
+    timerrt.hour = localrt.local().hours();
+    timerht.minute = 0;
+    timerht.hour = localht.local().hours(); 
+    logger.info("rancor raid starts at " + localrt.hours());
+    logger.info("haat raid starts at " + localht.hours());
     fs.readFile('./channels.json', 'utf8', function(err,data) {
         if (err) {
             logger.info('Couldn\'t load channel data.');
@@ -46,10 +60,13 @@ bot.on('ready', function (evt) {
             chan = JSON.parse(data);
         }
     });
-    var lunch = schedule.scheduleJob(timer, function() {
+    var rancor = schedule.scheduleJob(timerrt, function() {
         bot.sendMessage({to: chan.test, message: 'Rancor time!'});
-        logger.info('lunched');
     });
+    var haat = schedule.scheduleJob(timerht, function() {
+        bot.sendMessage({to: chan.test, message: 'HAAT time!'});
+    });
+
 });
 bot.on('message', function (user, userID, channelID, message, evt) {
     // Our bot needs to know if it will execute a command
@@ -78,9 +95,10 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                         });
                     } else {
                         ranc = JSON.parse(data);
+                        var rtime = moment.utc().hours(ranc.RancorTime).minutes(0).seconds(0);
                         bot.sendMessage({
                             to: channelID,
-                            message: 'Rancor raid time: ' + ranc.RancorTime
+                            message: 'Rancor raid time: ' + ranc.RancorTime + " " + rtime.local().fromNow() 
                         });
                     }
                  });
@@ -95,9 +113,10 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                         });
                     } else {
                         haat = JSON.parse(data);
+                        htime = moment.utc().hours(haat.HAATTime).minutes(0).seconds(0);
                         bot.sendMessage({
                             to: channelID,
-                            message: 'HAAT raid time: ' + haat.HAATTime
+                            message: 'HAAT raid time: ' + haat.HAATTime + " " + htime.local().fromNow()
                         });
                     }
                  });
