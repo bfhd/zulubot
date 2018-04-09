@@ -96,6 +96,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     } else {
                         ranc = JSON.parse(data);
                         var rtime = moment.utc().hours(ranc.RancorTime.substring(0,2)).minutes(0).seconds(0);
+                        rtime.add('days',1);
                         bot.sendMessage({
                             to: channelID,
                             message: 'Rancor raid time: ' + ranc.RancorTime + ", " + rtime.local().fromNow() 
@@ -114,6 +115,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     } else {
                         haat = JSON.parse(data);
                         htime = moment.utc().hours(haat.HAATTime.substring(0,2)).minutes(0).seconds(0);
+                        htime.add('days',1);
                         bot.sendMessage({
                             to: channelID,
                             message: 'HAAT raid time: ' + haat.HAATTime + ", " + htime.local().fromNow()
