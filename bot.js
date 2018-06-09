@@ -4,7 +4,7 @@ var fs = require('fs');
 var config = require('./auth.json');
 var schedule = require('node-schedule');
 var moment = require('moment-timezone');
-
+var commands = require('./commands.js')
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
@@ -80,9 +80,21 @@ bot.on('message', function (user, userID, channelID, message, evt)
         args = args.splice(1);
         switch(cmd) {
             case 'ping':
+                commands.ping();
+                break;
             case 'rancor': //announce Rancor raid time
+                commands.rancor();
+                break;
             case 'haat': //announce HAAT raid time
+                commands.haat();
+                break;
             case 'jail': // display prisoners (users who have been put in !jail)
+                commands.jail();
+                break;
+            case default:
+                commands.what();
+            }
+        }
      }
 });
 
