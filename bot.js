@@ -104,7 +104,7 @@ bot.on('disconnect', function(erMsg, code) {
 });
 //TODO:
 // fix jail
-// suggest raid start times
-// schedule start times with node-schedule, announce raid start or gogogo 
+// suggest raid start times - no longer needed
+// schedule start times with node-schedule, announce raid start or gogogo - done
 // load all channels at start and get their IDs so it's easier to send messages later
 // 
