@@ -1,7 +1,7 @@
-var Discord = require('discord.io');
+var Discord = require('discord.js');
 var logger = require('winston');
 var fs = require('fs');
-var auth = require('./auth.json');
+var config = require('./auth.json');
 var schedule = require('node-schedule');
 var moment = require('moment-timezone');
 
@@ -15,7 +15,7 @@ logger.level = 'debug';
 
 // Initialize Discord Bot
 var bot = new Discord.Client({
-   token: auth.token,
+   token: config.token,
    autorun: true
 });
 
@@ -37,8 +37,8 @@ bot.on('ready', function (evt) {
     
 }*/
 //start timers
-    var timerrt = new schedule.RecurrenceRule(); //timer for announcements
-    var timerht = new schedule.RecurrenceRule();
+    var timerrt = new schedule.RecurrenceRule(); //timer for announcements - rancor
+    var timerht = new schedule.RecurrenceRule(); // haat
     var rancortime = 20; //eventually replace with loading from file
     var haattime = 19;
     var rt = moment.utc().hours(rancortime).minutes(0).seconds(0);
@@ -68,13 +68,14 @@ bot.on('ready', function (evt) {
     });
 
 });
-bot.on('message', function (user, userID, channelID, message, evt) {
-    // Our bot needs to know if it will execute a command
-    // It will listen for messages that will start with `!`
+bot.on('message', function (user, userID, channelID, message, evt) 
     logger.info('user: ' + user + 'channelid: ' + channelID); 
+    if (message.author.bot) return; //ignore other bots
+    // commands will start with a !, we will ignore messages that don't
+    if (message.content.indexOf(config.prefix) !== 0) return;
     if (message.substring(0, 1) == '!') {
         var args = message.substring(1).split(' ');
-        var cmd = args[0];
+        var cmd = args[0].toLowerCase();
        
         args = args.splice(1);
         switch(cmd) {
@@ -85,7 +86,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     message: 'Pong!'
                 });
             break;
-            // Just add any case commands if you want to..
             case 'rancor': //announce Rancor raid time
                 fs.readFile('./raids.json', 'utf8', function(err,data) {
                     if (err) {
