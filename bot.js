@@ -4,7 +4,7 @@ var fs = require('fs');
 var config = require('./auth.json');
 var schedule = require('node-schedule');
 var moment = require('moment-timezone');
-var commands = require('./commands.js')
+var commands = require('./commands.js');
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
@@ -68,7 +68,7 @@ bot.on('ready', function (evt) {
     });
 
 });
-bot.on('message', function (user, userID, channelID, message, evt) 
+bot.on('message', function (user, userID, channelID, message, evt) {
     logger.info('user: ' + user + 'channelid: ' + channelID); 
     if (message.author.bot) return; //ignore other bots
     // commands will start with a !, we will ignore messages that don't
@@ -76,7 +76,7 @@ bot.on('message', function (user, userID, channelID, message, evt)
     if (message.substring(0, 1) == '!') {
         var args = message.substring(1).split(' ');
         var cmd = args[0].toLowerCase();
-       
+      
         args = args.splice(1);
         switch(cmd) {
             case 'ping':
@@ -89,11 +89,11 @@ bot.on('message', function (user, userID, channelID, message, evt)
                 commands.haat();
                 break;
             case 'jail': // display prisoners (users who have been put in !jail)
-                commands.jail();
+                commands.jail(args);
                 break;
             case default:
                 commands.what();
-            }
+                break;
         }
      }
 });
@@ -105,6 +105,6 @@ bot.on('disconnect', function(erMsg, code) {
 //TODO:
 // fix jail
 // suggest raid start times - no longer needed
-// schedule start times with node-schedule, announce raid start or gogogo - done
+// schedule start times with node-schedule, announce raid start or gogogo - done    DSX
 // load all channels at start and get their IDs so it's easier to send messages later
 // 

@@ -70,5 +70,12 @@ exports.jail = function() { // display prisoners (users who have been put in !ja
 };
 
 exports.what = function() { // for commands not recognised
+    var rand = Math.random();
+    var msg = 'What?';
+    if (rand > 0.5) msg = 'Huh?';
+    bot.sendMessage({
+        to:channelID,
+        message: msg
+        });
     return;
-}
+};
