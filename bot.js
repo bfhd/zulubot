@@ -19,15 +19,6 @@ var bot = new Discord.Client({
    autorun: true
 });
 
-//don't currently need this bit
-//fs.readFile('./raids.json', 'utf8', function(err,data) {
-//    if (err) {
-//        return console.log(err);
-//    }
-//   //return console.log(data);
-//});
-//    function kek() { logger.info('kek'); bot.sendMessage({to: '377562096088645636', message: 'kek'}); }
-//    setInterval(kek,60000); 
 bot.on('ready', function (evt) {
     logger.info('Connected');
     logger.info('Logged in as: ');
@@ -99,7 +90,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 });
 
 bot.on('disconnect', function(erMsg, code) {
-    console.log('----- Bot disconnected from Discord with code', code, 'for reason:', erMsg, '-----');
+    logger.info('----- Bot disconnected from Discord with code', code, 'for reason:', erMsg, '-----');
     bot.connect();
 });
 //TODO:
