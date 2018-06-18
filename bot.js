@@ -1,10 +1,10 @@
 var Discord = require('discord.js');
 var logger = require('winston');
 var fs = require('fs');
-var config = require('./auth.json');
+const config = require('./auth.json');
 var schedule = require('node-schedule');
 var moment = require('moment-timezone');
-var commands = require('./commands.js');
+const commands = require('./commands.js');
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
@@ -12,17 +12,16 @@ logger.add(logger.transports.Console, {
     timestamp: true
 });
 logger.level = 'debug';
-
 // Initialize Discord Bot
-var bot = new Discord.Client({
-   token: config.token,
-   autorun: true
-});
+var bot = new Discord.Client();
+
+// logging in 
+bot.login(config.token);
 
 bot.on('ready', function (evt) {
     logger.info('Connected');
     logger.info('Logged in as: ');
-    logger.info(bot.username + ' - (' + bot.id + ')');
+    logger.info(bot.user.username + ' - (' + bot.user.id + ')');
 //get all channels
    /* for (chans in bot.channels) {
     
@@ -42,8 +41,6 @@ bot.on('ready', function (evt) {
     timerrt.hour = localrt.local().hours();
     timerht.minute = 0;
     timerht.hour = localht.local().hours(); 
-    logger.info("rancor raid starts at " + localrt.hours());
-    logger.info("haat raid starts at " + localht.hours());
     fs.readFile('./channels.json', 'utf8', function(err,data) {
         if (err) {
             logger.info('Couldn\'t load channel data.');
@@ -52,38 +49,38 @@ bot.on('ready', function (evt) {
         }
     });
     var rancor = schedule.scheduleJob(timerrt, function() {
-        bot.sendMessage({to: chan.test, message: 'Rancor time!'});
+        bot.channels.get(chan.test).send('Rancor time!');
     });
     var haat = schedule.scheduleJob(timerht, function() {
-        bot.sendMessage({to: chan.test, message: 'HAAT time!'});
+        bot.channels.get(chan.test).send('HAAT time!');
     });
 
 });
-bot.on('message', function (user, userID, channelID, message, evt) {
-    logger.info('user: ' + user + 'channelid: ' + channelID); 
+bot.on("message", async message => {
+    logger.info('user: ' + message.author + 'channelid: ' + message.channel.name + ' message: ' + message.content); 
     if (message.author.bot) return; //ignore other bots
     // commands will start with a !, we will ignore messages that don't
     if (message.content.indexOf(config.prefix) !== 0) return;
-    if (message.substring(0, 1) == '!') {
-        var args = message.substring(1).split(' ');
+    if (message.content.substring(0, 1) == '!') {
+        var args = message.content.substring(1).split(' ');
         var cmd = args[0].toLowerCase();
       
         args = args.splice(1);
         switch(cmd) {
             case 'ping':
-                commands.ping();
+                commands.ping(bot,message);
                 break;
             case 'rancor': //announce Rancor raid time
-                commands.rancor();
+                commands.rancor(bot,message);
                 break;
             case 'haat': //announce HAAT raid time
-                commands.haat();
+                commands.haat(bot,message);
                 break;
             case 'jail': // display prisoners (users who have been put in !jail)
-                commands.jail(args);
+                commands.jail(bot,args);
                 break;
-            case default:
-                commands.what();
+             default:
+                commands.what(bot,message);
                 break;
         }
      }
@@ -93,6 +90,8 @@ bot.on('disconnect', function(erMsg, code) {
     logger.info('----- Bot disconnected from Discord with code', code, 'for reason:', erMsg, '-----');
     bot.connect();
 });
+
+
 //TODO:
 // fix jail
 // suggest raid start times - no longer needed
