@@ -1,12 +1,12 @@
 
 var exports = module.exports = {};
-    
+const logger = require ('winston');   
+const fs = require('fs');
+const moment = require('moment-timezone'); 
 // !ping
-exports.ping = function() {
-    bot.sendMessage({
-        to: channelID,
-        message: 'Pong!'
-    });
+exports.ping = async function(bot,msg) {
+    const m = await msg.channel.send("Ping?");
+    m.edit(`Pong! Latency is approximately ${m.createdTimestamp - msg.createdTimestamp}ms. API Latency is ${Math.round(bot.ping)}ms`);
 };
 
 exports.hstr = function() {//announce Rancor raid time
@@ -31,46 +31,37 @@ exports.hstr = function() {//announce Rancor raid time
 exports.rancor = function() {//announce Rancor raid time
     fs.readFile('./raids.json', 'utf8', function(err,data) {
         if (err) {
-            bot.sendMessage({
-                to: channelID,
-                message: 'Couldn\'t get Rancor raid time :('
-            });
+            msg.channel.send('Couldn\'t get Rancor raid time :(')
         } else {
             ranc = JSON.parse(data);
             var rtime = moment.utc().hours(ranc.RancorTime.substring(0,2)).minutes(0).seconds(0);
             rtime.add(1,'days');
-            bot.sendMessage({
-                to: channelID,
-                message: 'Rancor raid time: ' + ranc.RancorTime + ", " + rtime.local().fromNow() 
-            });
+            msg.channel.send('Rancor raid time: ' + ranc.RancorTime + ", " + rtime.local().fromNow());
         }
     });
 };
 
-exports.haat = function() { //announce HAAT raid time
+exports.haat = function(bot,msg) { //announce HAAT raid time
     fs.readFile('./raids.json', 'utf8', function(err,data) {
         if (err) {
            bot.sendMessage({
-                to: channelID,
+                to: msg.channel.ID,
                 message: 'Couldn\'t get HAAT raid time :('
                 });
         } else {
             haat = JSON.parse(data);
             htime = moment.utc().hours(haat.HAATTime.substring(0,2)).minutes(0).seconds(0);
             htime.add(1,'days');
-            bot.sendMessage({
-                to: channelID,
-                message: 'HAAT raid time: ' + haat.HAATTime + ", " + htime.local().fromNow()
-            });
+            msg.channel.send('HAAT raid time: ' + haat.HAATTime + ", " + htime.local().fromNow());
         }
     });
 };
 
-exports.jail = function() { // display prisoners (users who have been put in !jail)
+exports.jail = function(bot,msg) { // display prisoners (users who have been put in !jail)
     fs.readFile('./jail.json', 'utf8', function(err,data) {
         if (err) {
             bot.sendMessage({
-                to: channelID,
+                to: msg.channel.ID,
                 message: 'Couldn\'t find any prisoners :('
             });
         } else {
@@ -81,21 +72,18 @@ exports.jail = function() { // display prisoners (users who have been put in !ja
                 prisonerslist += ' ' + '\n';
             }
             bot.sendMessage({
-                to: channelID,
+                to: msg.channel.ID,
                 message: 'Current prisoners: \n' + prisonerslist
             });
         } 
     });
 };
 
-exports.what = function() { // for commands not recognised
+exports.what = function(bot,msg) { // for commands not recognised
     var rand = Math.random();
-    var msg = 'What?';
-    if (rand > 0.5) msg = 'Huh?';
-    bot.sendMessage({
-        to:channelID,
-        message: msg
-        });
+    var txt = 'What?';
+    if (rand > 0.5) txt = 'Huh?';
+    msg.channel.send(txt); 
     return;
 };
 
@@ -105,7 +93,7 @@ exports.help = function() {
         message: "This is the help message."
     });
     return;
-}
+};
 
 exports.set = function() {
      bot.sendMessage({
@@ -113,5 +101,5 @@ exports.set = function() {
         message: "This is the set message."
     });
     return;
-}   
-}
+};   
+
