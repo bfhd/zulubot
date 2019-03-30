@@ -9,6 +9,25 @@ exports.ping = function() {
     });
 };
 
+exports.hstr = function() {//announce Rancor raid time
+    fs.readFile('./raids.json', 'utf8', function(err,data) {
+        if (err) {
+            bot.sendMessage({
+                to: channelID,
+                message: 'Couldn\'t get HSTR raid time :('
+            });
+        } else {
+            ranc = JSON.parse(data);
+            var rtime = moment.utc().hours(ranc.RancorTime.substring(0,2)).minutes(0).seconds(0);
+            rtime.add(1,'days');
+            bot.sendMessage({
+                to: channelID,
+                message: 'HSTR raid time: ' + ranc.RancorTime + ", " + rtime.local().fromNow() 
+            });
+        }
+    });
+};
+
 exports.rancor = function() {//announce Rancor raid time
     fs.readFile('./raids.json', 'utf8', function(err,data) {
         if (err) {
@@ -79,3 +98,20 @@ exports.what = function() { // for commands not recognised
         });
     return;
 };
+
+exports.help = function() {
+    bot.sendMessage({
+        to:channelID,
+        message: "This is the help message."
+    });
+    return;
+}
+
+exports.set = function() {
+     bot.sendMessage({
+        to:channelID,
+        message: "This is the set message."
+    });
+    return;
+}   
+}
