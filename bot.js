@@ -54,6 +54,9 @@ bot.on('ready', function (evt) {
     var haat = schedule.scheduleJob(timerht, function() {
         bot.channels.get(chan.test).send('HAAT time!');
     });
+    var hstr = schedule.scheduleJob(timehstr,function() {
+        bot.channels.get(chan.test).send('HSTR time!');
+    });
 
 });
 bot.on("message", async message => {
@@ -76,8 +79,17 @@ bot.on("message", async message => {
             case 'haat': //announce HAAT raid time
                 commands.haat(bot,message);
                 break;
+            case 'hstr': //announce HSTR raid time
+                commands.hstr(bot,message);
+                break;
             case 'jail': // display prisoners (users who have been put in !jail)
                 commands.jail(bot,args);
+                break;
+            case 'set': //change raid times
+                commands.set(bot,message);
+                break;
+            case help: //display help message
+                commands.help(bot,message);
                 break;
              default:
                 commands.what(bot,message);
@@ -94,7 +106,7 @@ bot.on('disconnect', function(erMsg, code) {
 
 //TODO:
 // fix jail
-// suggest raid start times - no longer needed
+// suggest raid start times - no longer needed - still do it because it's useful
 // schedule start times with node-schedule, announce raid start or gogogo - done    DSX
 // load all channels at start and get their IDs so it's easier to send messages later
 // 
