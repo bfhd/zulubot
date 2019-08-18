@@ -1,7 +1,8 @@
 var Discord = require('discord.js');
 var logger = require('winston');
 var fs = require('fs');
-const config = require('./auth.json');
+const auth = require('./auth.json');
+const config = require('./config.json');
 var schedule = require('node-schedule');
 var moment = require('moment-timezone');
 const commands = require('./commands.js');
@@ -16,7 +17,7 @@ logger.level = 'debug';
 var bot = new Discord.Client();
 
 // logging in 
-bot.login(config.token);
+bot.login(auth.token);
 
 bot.on('ready', function (evt) {
     logger.info('Connected');
